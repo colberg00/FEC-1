@@ -1,0 +1,69 @@
+
+--=======================================================
+--  Entity decleration
+--=======================================================
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_unsigned.all;
+
+entity sam_mes is
+port (
+		clk : in  STD_LOGIC;
+		reset : in  STD_LOGIC;
+		bit_in : in std_logic;
+		mes : out STD_LOGIC_VECTOR (238 downto 0);
+		en_sig : out std_logic
+		
+);
+end entity;
+
+--=======================================================
+-- Architecture declaration
+--=======================================================
+
+architecture sam_mes_arch of sam_mes is
+
+signal numcount : std_logic_vector(7 downto 0);
+signal reg : STD_LOGIC_VECTOR (238 downto 0);
+
+
+begin
+
+process(clk)
+			
+			begin 
+			
+			if (rising_edge(clk)) then
+			
+				if (numcount < 238) then
+				
+				reg<=bit_in & reg(238 downto 1);
+				
+				numcount <= numcount+1;
+				
+				elsif (numcount = 238) then
+				
+				mes  <=bit_in & reg(238 downto 1);
+				reg  <=bit_in & reg(238 downto 1);
+				
+				numcount <= numcount+1;
+				en_sig <= '1';
+				
+				elsif (numcount > 238) then
+				
+				numcount <= "00000000";
+				en_sig <= '0';
+				else 
+				numcount <= "00000000";
+				end if;
+			
+			end if;
+			
+end process;
+
+
+end architecture;
+
+
