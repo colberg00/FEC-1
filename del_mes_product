@@ -1,0 +1,69 @@
+
+--=======================================================
+--  Entity decleration
+--=======================================================
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_unsigned.all;
+
+
+entity del_mes is
+port (
+
+		en_in : in std_logic;
+		clk : in  STD_LOGIC;
+		reset : in  STD_LOGIC;
+		mes : in STD_LOGIC_VECTOR (255 downto 0);
+		bit_out : out std_logic;
+		en_out : out std_logic
+		
+);
+end entity;
+
+
+--=======================================================
+-- Architecture declaration
+--=======================================================
+
+architecture del_mes_arch of del_mes is
+signal numcount : std_logic_vector(7 downto 0);
+signal reg : std_logic_vector(255 downto 0);
+
+
+begin
+
+process(clk)
+			
+			begin 
+			
+			if (rising_edge(clk)) then
+			en_out<= en_in;
+			
+				if en_in = '1' then
+					reg <= mes;
+					numcount <= "00000000";
+					bit_out <= mes(255);
+					
+					
+				else
+					
+					if numcount > 255 then
+						numcount <= "00000000";
+					else
+					bit_out <= reg(255);
+					numcount <= numcount+1;
+					reg(255 downto 1)	<= reg(254 downto 0);
+					en_out <= '0';
+					end if;
+				
+				end if;
+			
+			end if;
+			
+end process;
+
+
+end architecture;
+
